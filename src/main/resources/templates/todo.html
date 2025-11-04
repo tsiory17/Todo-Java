@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Todo App</title>
+    <link rel="stylesheet" th:href="@{/css/todo.css}">
+</head>
+<body class="main-container">
+<div class="todo-wrapper">
+<div class="todo-bg-overlay"></div>
+
+    <div class="todo-content">
+        <h1 class="todo-title">Todo Application</h1>
+        <form th:action="@{/add}" method="post" class="todo-add-form">
+            <input type="text" placeholder="Enter your task to do" name="name" required class="todo-input"/>
+            <button type="submit" class="btn-add">Add</button>
+        </form>
+        <div class="todo-list">
+            <th:block th:each="todo:${todos}">
+                <div class="todo-card">
+                <div th:if="${todo.todoId != editingId}" class="todo-normal">
+                    <span th:text="${todo.todoName}"
+                          th:classappend="${todo.isCompleted}? 'todo-text-complete' : 'todo-text'"
+                          class="todo-text"></span>
+                    <div class="btn-group">
+                        <form th:action="@{/toggle/{id}(id=${todo.todoId})}" method="post">
+                            <button type="submit" class="btn-small btn-toggle">Toggle</button>
+                        </form>
+
+                        <a th:href="@{/?editingId={id}(id=${todo.todoId})}" class="btn-small btn-edit">Edit</a>
+                        <form th:action="@{/delete/{id}(id=${todo.todoId})}" method="post">
+                            <button type="submit" class="btn-small btn-delete">Delete</button>
+                        </form>
+
+                    </div>
+                </div>
+
+                <div th:if="${todo.todoId == editingId}" class="todo-edit">
+                    <form th:action="@{/edit/{id}(id = ${todo.todoId})}" method="post" class="edit-form">
+                        <input type="text" name="name" th:value="${todo.todoName}" required class="edit-input">
+                        <button type="submit" class="btn-save">Save</button>
+                        <a th:href="@{/}" class="btn-cancel">Cancel</a>
+                    </form>
+                </div>
+                </div>
+                <hr class="todo-separator"/>
+            </th:block>
+        </div>
+    </div>
+</div>
+</body>
+</html>
